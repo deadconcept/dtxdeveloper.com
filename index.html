@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTX Developer — Software Tools by Derek</title>
+    <meta name="description" content="Developer portfolio and software tools by DTX Developer. Practical utilities for AV professionals and audio producers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS VARIABLES
+           ======================================== */
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0f1520;
+            --bg-card: #141c2b;
+            --bg-card-hover: #1a2436;
+            --border-color: #1e2a3f;
+            --border-glow: #2a6fff22;
+            --text-primary: #e4e8f1;
+            --text-secondary: #8892a6;
+            --text-muted: #5a6478;
+            --accent-blue: #2a6fff;
+            --accent-blue-dim: #2a6fff33;
+            --accent-cyan: #00e5c8;
+            --accent-cyan-dim: #00e5c822;
+            --accent-orange: #ff6b2a;
+            --accent-orange-dim: #ff6b2a22;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--accent-blue); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--accent-cyan); }
+
+        /* ========================================
+           BACKGROUND GRID EFFECT
+           ======================================== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========================================
+           NAV
+           ======================================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 23, 0.9);
+        }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        .nav-logo .accent { color: var(--accent-cyan); }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* Mobile hamburger */
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span {
+            display: block; width: 24px; height: 2px;
+            background: var(--text-secondary); margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                flex-direction: column;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px 24px;
+                gap: 16px;
+            }
+            .nav-links.open { display: flex; }
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+        section { padding: 100px 0; }
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 17px;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* ========================================
+           HERO
+           ======================================== */
+        #hero {
+            padding-top: 160px;
+            padding-bottom: 120px;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 4px;
+            padding: 4px 12px;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+        .hero-title {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        .hero-title .line2 { color: var(--text-muted); }
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--bg-primary);
+            background: var(--accent-cyan);
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .hero-cta:hover {
+            color: var(--bg-primary);
+            background: #33ffd8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 24px var(--accent-cyan-dim);
+        }
+        .hero-terminal {
+            margin-top: 64px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 600px;
+        }
+        .terminal-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .terminal-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #febc2e; }
+        .terminal-dot.green { background: #28c840; }
+        .terminal-body {
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        .terminal-body .prompt { color: var(--accent-cyan); }
+        .terminal-body .flag { color: var(--accent-orange); }
+        .terminal-body .string { color: var(--accent-blue); }
+        .terminal-body .comment { color: var(--text-muted); }
+
+        /* ========================================
+           PROJECTS
+           ======================================== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .project-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue-dim);
+            transform: translateY(-2px);
+        }
+        .project-card:hover::before { opacity: 1; }
+        .project-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .project-icon.blue { background: var(--accent-blue-dim); border: 1px solid var(--accent-blue); }
+        .project-icon.cyan { background: var(--accent-cyan-dim); border: 1px solid var(--accent-cyan); }
+        .project-icon.orange { background: var(--accent-orange-dim); border: 1px solid var(--accent-orange); }
+        .project-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 3px 10px;
+        }
+        .project-status {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-bottom: 16px;
+        }
+        .status-active {
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+        }
+        .status-dev {
+            color: var(--accent-orange);
+            background: var(--accent-orange-dim);
+        }
+
+        /* ========================================
+           BLOG
+           ======================================== */
+        .blog-list { display: flex; flex-direction: column; gap: 16px; }
+        .blog-item {
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .blog-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue-dim);
+        }
+        .blog-date {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            min-width: 100px;
+        }
+        .blog-title-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .blog-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent-blue);
+            background: var(--accent-blue-dim);
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        @media (max-width: 600px) {
+            .blog-item { flex-direction: column; gap: 6px; }
+            .blog-tag { margin-left: 0; }
+        }
+
+        /* ========================================
+           DOWNLOADS
+           ======================================== */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .download-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+        .download-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .download-version {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .download-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .download-reqs {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding: 10px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .download-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            list-style: none;
+        }
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cursor blink in terminal */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent-cyan);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#hero" class="nav-logo">dtx<span class="accent">developer</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#downloads">Downloads</a></li>
+                <li><a href="https://github.com/" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="container">
+            <div class="hero-badge">&#9679; Open for projects</div>
+            <h1 class="hero-title">
+                Build tools that<br>
+                <span class="line2">solve real problems.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Developer of practical software utilities for AV professionals
+                and audio producers. Built from the field, not the whiteboard.
+            </p>
+            <a href="#projects" class="hero-cta">View Projects &darr;</a>
+
+            <div class="hero-terminal">
+                <div class="terminal-bar">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                </div>
+                <div class="terminal-body">
+                    <span class="comment"># currently building</span><br>
+                    <span class="prompt">$</span> quicknic <span class="flag">--switch-profile</span> <span class="string">"Dante_Primary"</span><br>
+                    <span class="prompt">$</span> sessionpro <span class="flag">--scan</span> <span class="string">~/Sessions/</span><br>
+                    <span class="comment"># more on the way...</span><span class="cursor"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-label fade-in">// Projects</div>
+            <h2 class="section-title fade-in">What I'm building</h2>
+            <p class="section-desc fade-in">
+                Tools born from real workflows — designed for the people who actually use them.
+            </p>
+            <div class="projects-grid">
+                <div class="project-card fade-in">
+                    <div class="project-icon blue">&#9041;</div>
+                    <span class="project-status status-dev">In Development</span>
+                    <h3 class="project-name">QuickNIC</h3>
+                    <p class="project-desc">
+                        Windows system tray utility for instantly switching network interface
+                        configurations. Built for AV commissioning — swap between Dante, control,
+                        and corporate networks with one click.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Windows</span>
+                        <span class="tag">Networking</span>
+                        <span class="tag">SNMP</span>
+                    </div>
+                </div>
+                <div class="project-card fade-in">
+                    <div class="project-icon cyan">&#9835;</div>
+                    <span class="project-status status-dev">In Development</span>
+                    <h3 class="project-name">SessionPro</h3>
+                    <p class="project-desc">
+                        DAW session file workspace manager for Pro Tools. Organize, browse,
+                        and manage session files without digging through Finder or Explorer.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Pro Tools</span>
+                        <span class="tag">macOS</span>
+                    </div>
+                </div>
+                <div class="project-card fade-in">
+                    <div class="project-icon orange">&#43;</div>
+                    <span class="project-status status-active">Coming Soon</span>
+                    <h3 class="project-name">More Projects</h3>
+                    <p class="project-desc">
+                        New tools are in the pipeline. Follow along on the blog
+                        for updates on what's coming next.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">TBD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOG -->
+    <section id="blog">
+        <div class="container">
+            <div class="section-label fade-in">// Blog</div>
+            <h2 class="section-title fade-in">Updates &amp; Notes</h2>
+            <p class="section-desc fade-in">
+                Dev logs, project updates, and things I've learned along the way.
+            </p>
+            <div class="blog-list">
+                <div class="blog-item fade-in">
+                    <span class="blog-date">2026-03-26</span>
+                    <span class="blog-title-text">Site launch — dtxdeveloper.com is live</span>
+                    <span class="blog-tag">announcement</span>
+                </div>
+                <div class="blog-item fade-in">
+                    <span class="blog-date">2026-03-20</span>
+                    <span class="blog-title-text">QuickNIC: Why AV techs need a better network switcher</span>
+                    <span class="blog-tag">quicknic</span>
+                </div>
+                <div class="blog-item fade-in">
+                    <span class="blog-date">2026-03-10</span>
+                    <span class="blog-title-text">SessionPro vs SessionDock — different tools, different goals</span>
+                    <span class="blog-tag">sessionpro</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOWNLOADS -->
+    <section id="downloads">
+        <div class="container">
+            <div class="section-label fade-in">// Downloads</div>
+            <h2 class="section-title fade-in">Get the tools</h2>
+            <p class="section-desc fade-in">
+                Downloads will be available here as projects reach release. Sign up to get notified.
+            </p>
+            <div class="downloads-grid">
+                <div class="download-card fade-in">
+                    <h3 class="download-name">QuickNIC</h3>
+                    <span class="download-version">v0.x — pre-release</span>
+                    <p class="download-desc">
+                        Network profile switcher for Windows. Manage multiple NIC
+                        configurations from the system tray.
+                    </p>
+                    <div class="download-reqs">
+                        Requires: Windows 10/11 &middot; Python 3.10+
+                    </div>
+                    <button class="download-btn" disabled>
+                        &#8595; Coming Soon
+                    </button>
+                </div>
+                <div class="download-card fade-in">
+                    <h3 class="download-name">SessionPro</h3>
+                    <span class="download-version">v0.x — pre-release</span>
+                    <p class="download-desc">
+                        DAW session workspace manager. Organize and browse
+                        Pro Tools sessions with ease.
+                    </p>
+                    <div class="download-reqs">
+                        Requires: macOS 12+ &middot; Python 3.10+
+                    </div>
+                    <button class="download-btn" disabled>
+                        &#8595; Coming Soon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">&copy; 2026 DTX Developer. Built with code and caffeine.</p>
+            <ul class="footer-links">
+                <li><a href="https://github.com/" target="_blank">GitHub</a></li>
+                <li><a href="mailto:contact@dtxdeveloper.com">Email</a></li>
+                <li><a href="#hero">Back to top &uarr;</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- SCROLL ANIMATION -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
