@@ -273,17 +273,82 @@
             border-radius: 6px;
             display: none;
         }
-        .form-status.success {
-            display: block;
-            color: var(--accent-cyan);
-            background: var(--accent-cyan-dim);
-            border: 1px solid var(--accent-cyan);
-        }
         .form-status.error {
             display: block;
             color: var(--accent-red);
             background: var(--accent-red-dim);
             border: 1px solid var(--accent-red);
+        }
+
+        /* ---- Modal popup ---- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 48px 40px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent-cyan-dim);
+            border: 2px solid var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px auto;
+            font-size: 28px;
+        }
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .modal-text {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .modal-btn {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg-primary);
+            background: var(--accent-cyan);
+            border: none;
+            border-radius: 6px;
+            padding: 12px 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover {
+            background: #33ffd8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 24px var(--accent-cyan-dim);
         }
 
         /* ---- Sidebar info ---- */
@@ -477,6 +542,19 @@
         </div>
     </div>
 
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-icon">&#10003;</div>
+            <h3 class="modal-title">Message Sent!</h3>
+            <p class="modal-text">
+                Thanks for reaching out. I'll get back to you
+                within 24–48 hours.
+            </p>
+            <button class="modal-btn" onclick="closeModal()">Got it</button>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer>
         <div class="container">
@@ -520,7 +598,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        access_key: '192f9fe4-fa77-4f07-96aa-56741ae2f38d',
+                        access_key: 'YOUR_ACCESS_KEY_HERE',
                         name: name.value,
                         email: email.value,
                         company: document.getElementById('company').value,
@@ -533,14 +611,13 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    status.textContent = 'Message sent! I\'ll get back to you soon.';
-                    status.className = 'form-status success';
-                    // Clear form
+                    // Clear form and show success modal
                     name.value = '';
                     email.value = '';
                     document.getElementById('company').value = '';
                     document.getElementById('phone').value = '';
                     message.value = '';
+                    document.getElementById('successModal').classList.add('active');
                 } else {
                     status.textContent = 'Something went wrong. Please try again or email me directly.';
                     status.className = 'form-status error';
@@ -553,6 +630,20 @@
             btn.disabled = false;
             btn.textContent = 'Send Message \u2192';
         }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click (outside the box)
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
 
         // Scroll animations
         const observer = new IntersectionObserver((entries) => {
