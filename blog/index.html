@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — DTX Developer</title>
+    <meta name="description" content="Dev logs, project updates, and lessons learned from building software tools for AV professionals and audio producers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS VARIABLES
+           ======================================== */
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0f1520;
+            --bg-card: #141c2b;
+            --bg-card-hover: #1a2436;
+            --border-color: #1e2a3f;
+            --border-glow: #2a6fff22;
+            --text-primary: #e4e8f1;
+            --text-secondary: #8892a6;
+            --text-muted: #5a6478;
+            --accent-blue: #2a6fff;
+            --accent-blue-dim: #2a6fff33;
+            --accent-cyan: #00e5c8;
+            --accent-cyan-dim: #00e5c822;
+            --accent-orange: #ff6b2a;
+            --accent-orange-dim: #ff6b2a22;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--accent-blue); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--accent-cyan); }
+
+        /* ========================================
+           BACKGROUND GRID EFFECT
+           ======================================== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========================================
+           NAV
+           ======================================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 23, 0.9);
+        }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        .nav-logo .accent { color: var(--accent-cyan); }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .nav-links a.active { color: var(--accent-cyan); }
+
+        /* Mobile hamburger */
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span {
+            display: block; width: 24px; height: 2px;
+            background: var(--text-secondary); margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                flex-direction: column;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px 24px;
+                gap: 16px;
+            }
+            .nav-links.open { display: flex; }
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 17px;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* ========================================
+           BLOG PAGE HEADER
+           ======================================== */
+        .blog-header {
+            padding-top: 120px;
+            padding-bottom: 40px;
+        }
+
+        /* ========================================
+           BLOG LISTING
+           ======================================== */
+        .blog-section { padding-bottom: 100px; }
+
+        .blog-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .blog-item {
+            display: block;
+            padding: 28px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .blog-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue-dim);
+            transform: translateY(-1px);
+            color: inherit;
+        }
+        .blog-item-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+        .blog-date {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .blog-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent-blue);
+            background: var(--accent-blue-dim);
+            padding: 2px 8px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .blog-title-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .blog-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .blog-read-more {
+            display: inline-block;
+            margin-top: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            list-style: none;
+        }
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">dtx<span class="accent">developer</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/blog/" class="active">Blog</a></li>
+                <li><a href="/#downloads">Downloads</a></li>
+                <li><a href="https://github.com/deadconcept" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- BLOG HEADER -->
+    <div class="blog-header">
+        <div class="container">
+            <div class="section-label fade-in">// Blog</div>
+            <h1 class="section-title fade-in">Updates &amp; Notes</h1>
+            <p class="section-desc fade-in">
+                Dev logs, project updates, and things I've learned along the way.
+            </p>
+        </div>
+    </div>
+
+    <!-- BLOG LISTING -->
+    <div class="blog-section">
+        <div class="container">
+            <div class="blog-list">
+
+                <!-- POST 1 -->
+                <a class="blog-item fade-in" href="#">
+                    <div class="blog-item-top">
+                        <span class="blog-date">2026-03-26</span>
+                        <span class="blog-tag">announcement</span>
+                    </div>
+                    <div class="blog-title-text">Site launch — dtxdeveloper.com is live</div>
+                    <p class="blog-excerpt">
+                        After months of building tools in the background, it's time to put a front door
+                        on the shop. Here's what dtxdeveloper.com is, why it exists, and what's coming next.
+                    </p>
+                    <span class="blog-read-more">Read more &rarr;</span>
+                </a>
+
+                <!-- POST 2 -->
+                <a class="blog-item fade-in" href="#">
+                    <div class="blog-item-top">
+                        <span class="blog-date">2026-03-20</span>
+                        <span class="blog-tag">quicknic</span>
+                    </div>
+                    <div class="blog-title-text">QuickNIC: Why AV techs need a better network switcher</div>
+                    <p class="blog-excerpt">
+                        Every AV commissioning day involves juggling multiple network configurations.
+                        QuickNIC was born from the frustration of doing that through Windows adapter settings.
+                    </p>
+                    <span class="blog-read-more">Read more &rarr;</span>
+                </a>
+
+                <!-- POST 3 -->
+                <a class="blog-item fade-in" href="#">
+                    <div class="blog-item-top">
+                        <span class="blog-date">2026-03-10</span>
+                        <span class="blog-tag">sessionpro</span>
+                    </div>
+                    <div class="blog-title-text">SessionPro vs SessionDock — different tools, different goals</div>
+                    <p class="blog-excerpt">
+                        People keep asking how SessionPro compares to SessionDock. Short answer: they solve
+                        different problems. Here's the breakdown.
+                    </p>
+                    <span class="blog-read-more">Read more &rarr;</span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">&copy; 2026 DTX Developer. Built with code and caffeine.</p>
+            <ul class="footer-links">
+                <li><a href="https://github.com/deadconcept" target="_blank">GitHub</a></li>
+                <li><a href="mailto:contact@dtxdeveloper.com">Email</a></li>
+                <li><a href="#">Back to top &uarr;</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- SCROLL ANIMATION -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
