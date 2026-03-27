@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — DTX Developer</title>
+    <meta name="description" content="Get in touch with DTX Developer. Reach out about software tools, AV projects, or collaboration.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS VARIABLES
+           ======================================== */
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0f1520;
+            --bg-card: #141c2b;
+            --bg-card-hover: #1a2436;
+            --border-color: #1e2a3f;
+            --border-glow: #2a6fff22;
+            --text-primary: #e4e8f1;
+            --text-secondary: #8892a6;
+            --text-muted: #5a6478;
+            --accent-blue: #2a6fff;
+            --accent-blue-dim: #2a6fff33;
+            --accent-cyan: #00e5c8;
+            --accent-cyan-dim: #00e5c822;
+            --accent-orange: #ff6b2a;
+            --accent-orange-dim: #ff6b2a22;
+            --accent-red: #ff4757;
+            --accent-red-dim: #ff475722;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--accent-blue); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--accent-cyan); }
+
+        /* ========================================
+           BACKGROUND GRID EFFECT
+           ======================================== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========================================
+           NAV
+           ======================================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 23, 0.9);
+        }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        .nav-logo .accent { color: var(--accent-cyan); }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .nav-links a.active { color: var(--accent-cyan); }
+
+        /* Mobile hamburger */
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span {
+            display: block; width: 24px; height: 2px;
+            background: var(--text-secondary); margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                flex-direction: column;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px 24px;
+                gap: 16px;
+            }
+            .nav-links.open { display: flex; }
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 17px;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* ========================================
+           CONTACT PAGE
+           ======================================== */
+        .contact-header {
+            padding-top: 120px;
+            padding-bottom: 20px;
+        }
+        .contact-section {
+            padding-bottom: 100px;
+        }
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* ---- Form ---- */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 500px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .form-label .required {
+            color: var(--accent-orange);
+        }
+        .form-input,
+        .form-textarea {
+            font-family: var(--font-sans);
+            font-size: 15px;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px var(--accent-cyan-dim);
+        }
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .form-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg-primary);
+            background: var(--accent-cyan);
+            border: none;
+            border-radius: 6px;
+            padding: 14px 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+        .form-submit:hover {
+            background: #33ffd8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 24px var(--accent-cyan-dim);
+        }
+        .form-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ---- Form status messages ---- */
+        .form-status {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            display: none;
+        }
+        .form-status.success {
+            display: block;
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+            border: 1px solid var(--accent-cyan);
+        }
+        .form-status.error {
+            display: block;
+            color: var(--accent-red);
+            background: var(--accent-red-dim);
+            border: 1px solid var(--accent-red);
+        }
+
+        /* ---- Sidebar info ---- */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+        }
+        .info-card-title {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .info-card-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .info-card-text a {
+            color: var(--accent-cyan);
+        }
+        .response-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .response-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .response-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            list-style: none;
+        }
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">dtx<span class="accent">developer</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/contact/" class="active">Contact</a></li>
+                <li><a href="https://github.com/deadconcept" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTACT HEADER -->
+    <div class="contact-header">
+        <div class="container">
+            <div class="section-label fade-in">// Contact</div>
+            <h1 class="section-title fade-in">Get in touch</h1>
+            <p class="section-desc fade-in">
+                Have a question, idea, or just want to say hello? Fill out the form
+                and I'll get back to you.
+            </p>
+        </div>
+    </div>
+
+    <!-- CONTACT FORM + INFO -->
+    <div class="contact-section">
+        <div class="container">
+            <div class="contact-layout">
+
+                <!-- Form -->
+                <div class="contact-form fade-in" id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Name <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="name" name="name" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email <span class="required">*</span></label>
+                            <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="company">Company</label>
+                            <input class="form-input" type="text" id="company" name="company" placeholder="Your company">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone</label>
+                            <input class="form-input" type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="message">Message <span class="required">*</span></label>
+                        <textarea class="form-textarea" id="message" name="message" placeholder="What's on your mind?" required></textarea>
+                    </div>
+                    <button class="form-submit" type="button" id="submitBtn" onclick="submitForm()">
+                        Send Message &rarr;
+                    </button>
+                    <div class="form-status" id="formStatus"></div>
+                </div>
+
+                <!-- Sidebar Info -->
+                <div class="contact-info fade-in">
+                    <div class="info-card">
+                        <div class="info-card-title">What to expect</div>
+                        <p class="info-card-text">
+                            I read every message that comes through. Whether it's a bug report,
+                            a feature idea, or a potential collaboration — I'm interested.
+                        </p>
+                        <div class="response-time">
+                            <span class="response-dot"></span>
+                            <span class="response-text">Typically responds within 24-48 hours</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-title">Other ways to reach me</div>
+                        <p class="info-card-text">
+                            GitHub: <a href="https://github.com/deadconcept" target="_blank">@deadconcept</a><br>
+                            Email: <a href="mailto:derek@dtxaudio.com">derek@dtxaudio.com</a>
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-title">Open source</div>
+                        <p class="info-card-text">
+                            Found a bug in one of my tools? Open an issue on GitHub —
+                            it's the fastest way to get it on my radar.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">&copy; 2026 DTX Developer. Built with code and caffeine.</p>
+            <ul class="footer-links">
+                <li><a href="https://github.com/deadconcept" target="_blank">GitHub</a></li>
+                <li><a href="mailto:derek@dtxaudio.com">Email</a></li>
+                <li><a href="#">Back to top &uarr;</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- FORM SUBMISSION SCRIPT -->
+    <script>
+        /* ================================================
+           Web3Forms submission handler
+           Replace YOUR_ACCESS_KEY_HERE with your actual key
+           ================================================ */
+        async function submitForm() {
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('formStatus');
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const message = document.getElementById('message');
+
+            // Basic validation
+            if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
+                status.textContent = 'Please fill in all required fields.';
+                status.className = 'form-status error';
+                return;
+            }
+
+            // Disable button while submitting
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            status.className = 'form-status';
+            status.style.display = 'none';
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        access_key: '192f9fe4-fa77-4f07-96aa-56741ae2f38d',
+                        name: name.value,
+                        email: email.value,
+                        company: document.getElementById('company').value,
+                        phone: document.getElementById('phone').value,
+                        message: message.value,
+                        subject: 'New contact from dtxdeveloper.com'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    status.textContent = 'Message sent! I\'ll get back to you soon.';
+                    status.className = 'form-status success';
+                    // Clear form
+                    name.value = '';
+                    email.value = '';
+                    document.getElementById('company').value = '';
+                    document.getElementById('phone').value = '';
+                    message.value = '';
+                } else {
+                    status.textContent = 'Something went wrong. Please try again or email me directly.';
+                    status.className = 'form-status error';
+                }
+            } catch (error) {
+                status.textContent = 'Network error. Please try again or email me directly.';
+                status.className = 'form-status error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Send Message \u2192';
+        }
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
